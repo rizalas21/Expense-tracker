@@ -15,7 +15,7 @@ export default function ClientWrapper({
   return (
     <SessionProvider>
       {!hideNavbar && <Navbar />}
-      <section className="flex px-17 pt-5 w-[75%] bg-gray-100">
+      <section className="flex px-17 pt-3 w-[75%] bg-gray-100">
         {children}
       </section>
     </SessionProvider>

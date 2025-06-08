@@ -7,7 +7,7 @@ import { useEffect, useState } from "react";
 import LoadingComponent from "./components/LoadingComponent";
 
 export default function Home() {
-  const { data, status } = useSession();
+  const { status } = useSession();
   const router = useRouter();
   useEffect(() => {
     if (status === "unauthenticated") {

@@ -9,7 +9,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className="w-screen h-screen flex p-0 m-0 overflow-hidden">
+      <body className="w-screen flex p-0 m-0 overflow-hidden">
         <ClientWrapper>{children}</ClientWrapper>
       </body>
     </html>
