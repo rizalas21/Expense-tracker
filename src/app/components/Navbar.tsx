@@ -10,14 +10,16 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { signOut, useSession } from "next-auth/react";
 import { usePathname, useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import LoadingComponent from "./LoadingComponent";
-import LoginModal from "./LoginModal";
+import LogoutModal from "./LogoutModal";
 
 export default function Navbar() {
   const { status } = useSession();
   const router = useRouter();
   const url = usePathname();
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
+
   useEffect(() => {
     if (status === "unauthenticated") {
       router.push("/login");
@@ -32,6 +34,12 @@ export default function Navbar() {
       id="navbar"
       className="bg-gray-900 h-screen w-[25%] text-gray-300 px-10 py-6 space-y-6 z-999"
     >
+      {showLogoutModal && (
+        <LogoutModal
+          showLogoutModal={showLogoutModal}
+          setShowLogoutModal={setShowLogoutModal}
+        />
+      )}
       <a
         href="Dashboard"
         className={`flex items-center gap-x-4 text-gray-400 hover:text-white hover:bg-gray-800 px-4 py-2 rounded-lg transition duration-200 ease-in-out cursor-pointer min-h-[48px] ${
@@ -69,7 +77,7 @@ export default function Navbar() {
         <p className="text-lg leading-none text-left">Categories</p>
       </a>
       <button
-        onClick={() => <LoginModal />}
+        onClick={() => setShowLogoutModal(true)}
         className="flex items-center gap-x-4 text-gray-400 hover:text-white hover:bg-gray-800 px-4 py-2 rounded-lg transition duration-200 ease-in-out cursor-pointer min-h-[48px] w-full"
       >
         <FontAwesomeIcon className="text-xl align-middle" icon={faSignOutAlt} />
