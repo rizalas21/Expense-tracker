@@ -8,7 +8,7 @@ import {
   faTag,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { signOut, useSession } from "next-auth/react";
+import { useSession } from "next-auth/react";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import LoadingComponent from "./LoadingComponent";
@@ -41,36 +41,36 @@ export default function Navbar() {
         />
       )}
       <a
-        href="Dashboard"
+        href="/dashboard"
         className={`flex items-center gap-x-4 text-gray-400 hover:text-white hover:bg-gray-800 px-4 py-2 rounded-lg transition duration-200 ease-in-out cursor-pointer min-h-[48px] ${
-          url === "/Dashboard" ? "text-white bg-gray-800" : ""
+          url === "/dashboard" ? "text-white bg-gray-800" : ""
         }`}
       >
         <FontAwesomeIcon className="text-xl align-middle" icon={faWindows} />
         <p className="text-lg leading-none text-left">Dashboard</p>
       </a>
       <a
-        href="/Transactions"
+        href="/transactions"
         className={`flex items-center gap-x-4 text-gray-400 hover:text-white hover:bg-gray-800 px-4 py-2 rounded-lg transition duration-200 ease-in-out cursor-pointer min-h-[48px] ${
-          url === "/Transactions" ? "text-white bg-gray-800" : ""
+          url === "/transactions" ? "text-white bg-gray-800" : ""
         }`}
       >
         <FontAwesomeIcon className="text-xl align-middle" icon={faList} />
         <p className="text-lg leading-none text-left">Transactions</p>
       </a>
       <a
-        href="Budgets"
+        href="budgets"
         className={`flex items-center gap-x-4 text-gray-400 hover:text-white hover:bg-gray-800 px-4 py-2 rounded-lg transition duration-200 ease-in-out cursor-pointer min-h-[48px] ${
-          url === "/Budgets" ? "text-white bg-gray-800" : ""
+          url === "/budgets" ? "text-white bg-gray-800" : ""
         }`}
       >
         <FontAwesomeIcon className="text-xl align-middle" icon={faChartPie} />
         <p className="text-lg leading-none text-left">Budgets</p>
       </a>
       <a
-        href="Categories"
+        href="categories"
         className={`flex items-center gap-x-4 text-gray-400 hover:text-white hover:bg-gray-800 px-4 py-2 rounded-lg transition duration-200 ease-in-out cursor-pointer min-h-[48px] ${
-          url === "/Categories" ? "text-white bg-gray-800" : ""
+          url === "/categories" ? "text-white bg-gray-800" : ""
         }`}
       >
         <FontAwesomeIcon className="text-xl align-middle" icon={faTag} />
@@ -78,7 +78,7 @@ export default function Navbar() {
       </a>
       <button
         onClick={() => setShowLogoutModal(true)}
-        className="flex items-center gap-x-4 text-gray-400 hover:text-white hover:bg-gray-800 px-4 py-2 rounded-lg transition duration-200 ease-in-out cursor-pointer min-h-[48px] w-full"
+        className="flex items-center gap-x-4 text-gray-400 hover:text-white hover:bg-gray-800 px-4 py-2 rounded-lg transition duration-200 ease-in-out cursor-pointer min-h-[48px] w-full mt-[100%]"
       >
         <FontAwesomeIcon className="text-xl align-middle" icon={faSignOutAlt} />
         <p className="text-lg leading-none text-left">Logout</p>

@@ -18,5 +18,5 @@ export default function Home() {
   if (status === "loading") return <LoadingComponent />;
   if (status === "unauthenticated") return null;
 
-  return router.replace("/Dashboard");
+  return router.replace("/dashboard");
 }

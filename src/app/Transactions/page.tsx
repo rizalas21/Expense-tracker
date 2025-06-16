@@ -1,7 +1,12 @@
+"use client";
+
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useState } from "react";
+import AddTransaction from "../components/AddTransaction";
 
 export default function Transactions() {
+  const [showModal, setShowModal] = useState(false);
   return (
     <main className="w-full flex flex-col gap-5 max-h-screen px-4">
       <div className="flex justify-between px-3">
@@ -17,23 +22,43 @@ export default function Transactions() {
             className="w-full pl-10 pr-4 py-2 rounded bg-gray-100 text-sm focus:outline-none focus:ring-2 focus:ring-sky-500 transition duration-200 border-b-1 border-opacity-25"
           />
         </div>
-        <button className="bg-sky-800 text-white border rounded-xl px-3 py-2 hover:bg-sky-900 cursor-pointer">
+        <button
+          className="bg-sky-800 text-white border rounded-xl px-3 py-2 hover:bg-sky-900 cursor-pointer"
+          onClick={() => setShowModal(true)}
+        >
           Add Transactions
         </button>
       </div>
-      <div className="w-5/12 flex items-center justify-between gap-1 bg-white border border-gray-300 rounded-md px-3 py-1">
-        <input
-          type="date"
-          className="text-sm px-2 py-1 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-sky-500"
-          name="startDate"
-        />
-        <span className="text-gray-500 text-sm">to</span>
-        <input
-          type="date"
-          className="text-sm px-2 py-1 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-sky-500"
-          name="endDate"
-        />
-      </div>
+      <section className="flex flex-wrap gap-4 w-full">
+        <div className="flex items-center gap-2 bg-white border border-gray-300 rounded-md px-3 py-2">
+          <input
+            type="date"
+            className="text-sm px-2 py-1 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-sky-500"
+            name="startDate"
+          />
+          <span className="text-gray-500 text-sm">to</span>
+          <input
+            type="date"
+            className="text-sm px-2 py-1 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-sky-500"
+            name="endDate"
+          />
+        </div>
+
+        <select className="min-w-[200px] px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200">
+          <option value="">Choose Category</option>
+          <option value="">Category 1</option>
+          <option value="">Category 2</option>
+        </select>
+
+        <div className="flex gap-4">
+          <button className="bg-green-100 text-green-700 font-semibold py-2 px-3 rounded-lg border border-green-300 shadow-sm hover:bg-green-200 hover:shadow-md transition duration-300">
+            Income
+          </button>
+          <button className="bg-red-100 text-red-700 font-semibold py-2 px-3 rounded-lg border border-red-300 shadow-sm hover:bg-red-200 hover:shadow-md transition duration-300">
+            Expense
+          </button>
+        </div>
+      </section>
 
       <div className="flex gap-1 w-full overflow-y-auto">
         <div
@@ -47,6 +72,7 @@ export default function Transactions() {
                 <th className="text-left px-4 py-2">Description</th>
                 <th className="text-left px-4 py-2">Amount</th>
                 <th className="text-left px-4 py-2">Category</th>
+                <th className="text-left px-4 py-2">Type</th>
                 <th className="text-right px-4 py-2">Detail Transaction</th>
               </tr>
             </thead>
@@ -57,6 +83,7 @@ export default function Transactions() {
                   <td className="text-left px-4 py-2">Refund</td>
                   <td className="text-left px-4 py-2">$100</td>
                   <td className="text-left px-4 py-2">Refund</td>
+                  <td className="text-left px-4 py-2">Expense</td>
                   <td className="text-center px-4 py-2">
                     <button className="text-blue-600 hover:underline">
                       Detail
@@ -86,6 +113,9 @@ export default function Transactions() {
           </div>
         </div>
       </div>
+      {showModal && (
+        <AddTransaction showModal={showModal} setShowModal={setShowModal} />
+      )}
     </main>
   );
 }
