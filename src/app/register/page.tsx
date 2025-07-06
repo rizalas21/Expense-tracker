@@ -16,6 +16,7 @@ export default function Register() {
   async function handleSubmit(e: any) {
     e.preventDefault();
     const res = await axios.post("/api/register", input);
+    console.log("response ini bro => ", res);
     if (res.status >= 400) return null;
     setInput({ name: "", email: "", password: "" });
     router.push("/login");

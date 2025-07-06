@@ -1,4 +1,4 @@
-import { prisma } from "@/app/prisma";
+import { prisma } from "@/lib/auth/prisma";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(req: NextRequest) {
@@ -59,7 +59,26 @@ export async function GET(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
   const data = await req.json();
-
-  const res = await prisma.transactions.create(data);
-  return NextResponse.json(res);
+  console.log("data be nihh bro -> ", data.user);
+  try {
+    const row = await prisma.users.findUnique({
+      where: {
+        email: data?.user,
+      },
+      select: { id: true },
+    });
+    console.log(row);
+    if (!row) return NextResponse.json("gaada user bro");
+    console.log({ data: { ...data, userid: row?.id } });
+    const res = await prisma.transactions.create({
+      data: {
+        ...data,
+        user: row?.id,
+      },
+    });
+    return NextResponse.json(res);
+  } catch (error) {
+    console.log(error);
+    return NextResponse.json(error);
+  }
 }

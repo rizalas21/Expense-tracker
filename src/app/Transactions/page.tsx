@@ -60,12 +60,12 @@ export default function Transactions() {
         </div>
       </section>
 
-      <div className="flex gap-1 w-full overflow-y-auto">
+      <div className="flex gap-1 w-full">
         <div
           id="Transactions"
           className="bg-white px-5 py-3 rounded-lg space-y-2 shadow-xl w-full"
         >
-          <table className="w-full table-auto overflow-y-auto">
+          <table className="w-full table-auto">
             <thead>
               <tr className="border-b border-gray-500/30">
                 <th className="text-left px-4 py-2">Date</th>
@@ -76,7 +76,7 @@ export default function Transactions() {
                 <th className="text-right px-4 py-2">Detail Transaction</th>
               </tr>
             </thead>
-            <tbody>
+            <tbody className=" overflow-y-auto">
               {[...Array(8)].map((_, i) => (
                 <tr key={i} className="border-b border-gray-500/30">
                   <td className="text-left px-4 py-2">4/2</td>

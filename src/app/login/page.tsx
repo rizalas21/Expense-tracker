@@ -3,6 +3,7 @@
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import Swal from "sweetalert2";
 
 export default function Login() {
   const router = useRouter();
@@ -13,15 +14,22 @@ export default function Login() {
     setInput({ ...input, [name]: value });
   }
 
-  console.log("input bro -> ", input);
-
   async function handleSubmit(e: any) {
     e.preventDefault();
     const res = await signIn("auth-session", {
       ...input,
       redirect: false,
     });
-    if (!res?.ok || res.error) return null;
+
+    console.log("res -> ", res);
+
+    if (!res?.ok || res.error) {
+      return Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: "Something went wrong!",
+      });
+    }
 
     setInput({ email: "", password: "" });
     router.push("/");

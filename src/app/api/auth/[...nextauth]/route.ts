@@ -1,8 +1,9 @@
 import CredentialsProvider from "next-auth/providers/credentials";
 import { Login } from "@/lib/auth/Login";
-import NextAuth from "next-auth";
+import NextAuth, { AuthOptions } from "next-auth";
+import { NextResponse } from "next/server";
 
-export const authOptions = {
+export const authOptions: AuthOptions = {
   providers: [
     CredentialsProvider({
       id: "auth-session",
@@ -20,11 +21,13 @@ export const authOptions = {
         },
       },
       async authorize(credentials) {
+        console.log("masuk authorize -> ", credentials);
         if (!credentials?.email || !credentials?.password) return null;
         try {
           const { email, password } = credentials;
           const User = await Login(email, password);
-          if (!User) return null;
+          console.log("USER BRO +> ", User);
+          if (!User.email) return null;
           return User;
         } catch (err) {
           console.log("error when author => ", err);
@@ -33,30 +36,28 @@ export const authOptions = {
       },
     }),
   ],
-  secret: process.env.SECRET_AUTH,
+  secret: process.env.NEXTAUTH_SECRET,
   session: { strategy: "jwt" },
-  pages: { signIn: "/signin" },
+  pages: { signIn: "/login" },
   callbacks: {
-    async jwt({ token, user }) {
+    async jwt({ token, user }: { token: any; user: any }) {
       if (user) {
         token.id = user.id;
         token.email = user.email;
-        token.accessToken = user.token;
       }
       return token;
     },
-    async session({ session, token }) {
+    async session({ session, token }: { session: any; token: any }) {
       session.user = {
         ...session.user,
         id: token.id,
         email: token.email,
-        accessToken: token.accessToken,
       };
       return session;
     },
   },
 };
 
-const handler = NextAuth(authOptions);
+const handler = NextAuth(authOptions as AuthOptions);
 
 export { handler as GET, handler as POST };

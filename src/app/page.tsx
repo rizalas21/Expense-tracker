@@ -1,22 +1,22 @@
 "use client";
 
-import { signOut, useSession } from "next-auth/react";
-import Image from "next/image";
+import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import LoadingComponent from "./components/LoadingComponent";
 
 export default function Home() {
   const { status } = useSession();
   const router = useRouter();
+
   useEffect(() => {
     if (status === "unauthenticated") {
       router.push("/login");
+    } else if (status === "authenticated") {
+      router.replace("/dashboard");
     }
   }, [status, router]);
 
   if (status === "loading") return <LoadingComponent />;
-  if (status === "unauthenticated") return null;
-
-  return router.replace("/dashboard");
+  return null;
 }

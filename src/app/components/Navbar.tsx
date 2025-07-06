@@ -15,19 +15,8 @@ import LoadingComponent from "./LoadingComponent";
 import LogoutModal from "./LogoutModal";
 
 export default function Navbar() {
-  const { status } = useSession();
-  const router = useRouter();
   const url = usePathname();
   const [showLogoutModal, setShowLogoutModal] = useState(false);
-
-  useEffect(() => {
-    if (status === "unauthenticated") {
-      router.push("/login");
-    }
-  }, [status, router]);
-
-  if (status === "loading") return <LoadingComponent />;
-  if (status === "unauthenticated") return null;
 
   return (
     <section
