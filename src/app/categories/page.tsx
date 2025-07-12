@@ -2,12 +2,12 @@
 
 import axios from "axios";
 import { useEffect, useState } from "react";
-import AddCategories from "../components/Categories/AddCategory";
+import AddCategories from "./AddCategory";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPenAlt, faTrashAlt } from "@fortawesome/free-solid-svg-icons";
-import DeleteCategory from "../components/Categories/DeleteCategory";
+import DeleteCategory from "./DeleteCategory";
 import { useCategoryStore } from "@/stores/categoryStore";
-import UpdateCategory from "../components/Categories/UpdateCategory";
+import UpdateCategory from "./UpdateCategory";
 
 export interface Category {
   id: string;
@@ -18,13 +18,7 @@ export default function Categories() {
   const [showModal, setShowModal] = useState("");
   const [category, setCategory] = useState<Category>({ id: "", name: "" });
   const [isLoading, setIsLoading] = useState(true);
-  const {
-    categories,
-    getCategory,
-    addCategory,
-    deleteCategory,
-    updateCategory,
-  } = useCategoryStore();
+  const { categories, getCategory } = useCategoryStore();
 
   useEffect(() => {
     try {
@@ -84,8 +78,8 @@ export default function Categories() {
                       <button
                         className="p-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition"
                         onClick={() => {
-                          setShowModal("del");
                           setCategory({ id: item.id, name: item.name });
+                          setShowModal("del");
                         }}
                       >
                         <FontAwesomeIcon icon={faTrashAlt} />

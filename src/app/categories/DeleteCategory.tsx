@@ -20,7 +20,18 @@ export default function DeleteCategory({
   const { deleteCategory } = useCategoryStore();
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    await deleteCategory(category.id);
+
+    const result = await deleteCategory(category.id);
+    console.log("deleteCategory result =>", result);
+
+    if ("error" in result) {
+      return Swal.fire({
+        icon: "error",
+        title: "Delete Failed",
+        text: result.error,
+      });
+    }
+
     setShowModal("");
     Swal.fire({
       icon: "success",
@@ -30,6 +41,7 @@ export default function DeleteCategory({
       timer: 1500,
     });
   };
+
   return (
     <section className="flex items-center justify-center h-screen w-screen fixed left-0 top-0 bg-black/50 z-50">
       <div className="bg-white rounded-2xl shadow-2xl p-8 w-[90%] max-w-md animate-fadeIn">
