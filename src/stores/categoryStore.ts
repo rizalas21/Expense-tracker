@@ -42,22 +42,20 @@ export const useCategoryStore = create<CategoryState>((set) => ({
 
   deleteCategory: async (id) => {
     try {
-      // [1] Cek apakah ada budget yang pakai kategori ini
       const checkBudgetRes = await axios.get("/api/budgets", {
         params: { keyword: id },
       });
 
-      console.log("hasil check budgets nya bro => ", checkBudgetRes);
-      const relatedBudgets = checkBudgetRes.data;
+      const relatedBudgets = checkBudgetRes.data?.data;
 
-      if (relatedBudgets) {
+      if (relatedBudgets.length > 0) {
+        console.log("true bro");
         return {
           error:
             "❌ Cannot delete. This category is linked to existing budgets.",
         };
       }
 
-      // [2] Hapus kategori
       const res = await axios.delete(`/api/categories/${id}`);
 
       if (res.status >= 400) {
@@ -68,7 +66,6 @@ export const useCategoryStore = create<CategoryState>((set) => ({
         };
       }
 
-      // [3] Update state lokal
       set((state) => ({
         categories: state.categories.filter((item) => item.id !== id),
       }));

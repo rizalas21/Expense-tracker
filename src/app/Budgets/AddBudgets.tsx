@@ -17,8 +17,8 @@ export default function AddBudgetModal({ showModal, setShowModal }: AddBudget) {
   const { addBudget } = useBudgetStore();
   const [data, setData] = useState({
     amount: 0,
-    month: 0,
-    year: 0,
+    month: 1,
+    year: new Date().getFullYear(),
     categoryId: "",
   });
 
@@ -38,8 +38,19 @@ export default function AddBudgetModal({ showModal, setShowModal }: AddBudget) {
     e.preventDefault();
 
     try {
-      await addBudget(data);
+      const res = await addBudget(data);
+      console.log("ini response nya bro -> ", res);
       setShowModal("");
+
+      if ("error" in res) {
+        setShowModal("");
+        return Swal.fire({
+          title: "Error!",
+          text: res.error,
+          icon: "error",
+          confirmButtonText: "Try Again",
+        });
+      }
 
       Swal.fire({
         title: "Success!",
@@ -95,6 +106,7 @@ export default function AddBudgetModal({ showModal, setShowModal }: AddBudget) {
               className="w-full px-4 py-2 border rounded-lg"
               name="month"
               onChange={(e) => handleChange(e)}
+              defaultValue={data.month}
             >
               {Array.from({ length: 12 }).map((_, i) => (
                 <option key={i + 1} value={i + 1}>
@@ -113,7 +125,7 @@ export default function AddBudgetModal({ showModal, setShowModal }: AddBudget) {
               onChange={(e) => handleChange(e)}
               min={2023}
               max={2100}
-              defaultValue={new Date().getFullYear()}
+              defaultValue={data.year}
             />
           </div>
 

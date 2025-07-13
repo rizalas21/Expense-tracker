@@ -14,10 +14,16 @@ export interface Budget {
   };
 }
 
+type AddResult =
+  | { success: Omit<Budget, "id" | "category" | "userId"> }
+  | { error: string };
+
 interface BudgetState {
   budgets: Budget[];
   getBudgets: () => void;
-  addBudget: (data: Omit<Budget, "id" | "category" | "userId">) => void;
+  addBudget: (
+    data: Omit<Budget, "id" | "category" | "userId">
+  ) => Promise<AddResult>;
   deleteBudget: (id: string) => void;
   updateBudget: (id: string, data: Omit<Budget, "id" | "category">) => void;
 }
@@ -28,6 +34,7 @@ export const useBudgetStore = create<BudgetState>((set) => ({
   getBudgets: async () => {
     try {
       const res = await axios.get("/api/budgets");
+      console.log(res);
       if (res.status >= 400 || !Array.isArray(res.data?.data)) return null;
       set({ budgets: res.data.data });
     } catch (error) {
@@ -39,11 +46,31 @@ export const useBudgetStore = create<BudgetState>((set) => ({
   addBudget: async (data) => {
     try {
       const res = await axios.post("/api/budgets", { data });
+      if (res.status >= 400) {
+        return {
+          error: `❌ Failed to add budget: ${
+            res.data?.error || "Unknown error"
+          }`,
+        };
+      }
+      console.log("jawaban res nya bro -> ", res);
       set((state) => ({
         budgets: [res.data, ...state.budgets],
       }));
+      return { success: data };
     } catch (error) {
       console.error("Error adding budget:", error);
+      if (axios.isAxiosError(error)) {
+        return {
+          error: `❌ ${
+            error.response?.data?.error || error.message || "Axios error"
+          }`,
+        };
+      }
+
+      return {
+        error: "❌ Unknown error while adding budget",
+      };
     }
   },
 

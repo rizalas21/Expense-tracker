@@ -22,8 +22,8 @@ export default function DeleteCategory({
     e.preventDefault();
 
     const result = await deleteCategory(category.id);
-    console.log("deleteCategory result =>", result);
 
+    console.log("deleteCategory result =>", result);
     if ("error" in result) {
       return Swal.fire({
         icon: "error",

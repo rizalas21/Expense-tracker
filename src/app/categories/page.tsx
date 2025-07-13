@@ -21,13 +21,16 @@ export default function Categories() {
   const { categories, getCategory } = useCategoryStore();
 
   useEffect(() => {
-    try {
-      getCategory();
-    } catch (error) {
-      console.log("error when getCategory");
-    } finally {
-      setIsLoading(false);
-    }
+    const fetch = async () => {
+      try {
+        await getCategory();
+      } catch (error) {
+        console.log("error when getCategory");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetch();
   }, [getCategory]);
   console.log(categories);
   return (

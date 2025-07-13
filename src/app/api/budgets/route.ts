@@ -3,18 +3,18 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(req: NextRequest) {
   try {
-    const keyword = req.nextUrl.searchParams.get("keyword");
-    console.log("keyword nya nihh bro => ", keyword);
+    const categoryId = req.nextUrl.searchParams.get("categoryId");
+    const month = req.nextUrl.searchParams.get("month");
+    const year = req.nextUrl.searchParams.get("year");
+    const userId = req.headers.get("user-id");
 
-    const whereClause = keyword
-      ? {
-          OR: [
-            {
-              categoryId: keyword,
-            },
-          ],
-        }
-      : {};
+    const whereClause: any = {
+      userId,
+    };
+
+    if (categoryId) whereClause.categoryId = categoryId;
+    if (month) whereClause.month = Number(month);
+    if (year) whereClause.year = Number(year);
 
     const budgets = await prisma.budgets.findMany({
       where: whereClause,
@@ -49,12 +49,41 @@ export async function GET(req: NextRequest) {
 export async function POST(req: NextRequest) {
   try {
     const userId = req.headers.get("user-id");
-    const data = await req.json();
+    const { data } = await req.json();
+
+    const checkBudget = await prisma.budgets.findFirst({
+      where: {
+        categoryId: data.categoryId,
+        month: data.month,
+        year: data.year,
+        userId: userId as string,
+      },
+    });
+
+    console.log("hasil check budget bro -> ", checkBudget);
+
+    if (checkBudget) {
+      return NextResponse.json(
+        { message: "❌ Budget already exists" },
+        { status: 400 }
+      );
+    }
     console.log("userId -> ", userId, "data nya bos -> ", data);
     const budget = await prisma.budgets.create({
       data: { ...data, userId },
     });
-    return NextResponse.json(budget);
+
+    const category = await prisma.categories.findFirst({
+      where: { id: budget.categoryId },
+    });
+    console.log({
+      ...budget,
+      categoryName: category?.name || null,
+    });
+    return NextResponse.json({
+      ...budget,
+      categoryName: category?.name || null,
+    });
   } catch (error) {
     console.error("POST Budgets Error:", error);
     return NextResponse.json({ message: "Server error" }, { status: 500 });
