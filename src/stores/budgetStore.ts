@@ -14,9 +14,7 @@ export interface Budget {
   };
 }
 
-type AddResult =
-  | { success: Omit<Budget, "id" | "category" | "userId"> }
-  | { error: string };
+type AddResult = void | { error: string };
 
 interface BudgetState {
   budgets: Budget[];
@@ -25,7 +23,10 @@ interface BudgetState {
     data: Omit<Budget, "id" | "category" | "userId">
   ) => Promise<AddResult>;
   deleteBudget: (id: string) => void;
-  updateBudget: (id: string, data: Omit<Budget, "id" | "category">) => void;
+  updateBudget: (
+    id: string,
+    data: Omit<Budget, "id" | "category" | "userId">
+  ) => void;
 }
 
 export const useBudgetStore = create<BudgetState>((set) => ({
@@ -46,6 +47,7 @@ export const useBudgetStore = create<BudgetState>((set) => ({
   addBudget: async (data) => {
     try {
       const res = await axios.post("/api/budgets", { data });
+      console.log("jawaban res nya bro -> ", res);
       if (res.status >= 400) {
         return {
           error: `❌ Failed to add budget: ${
@@ -53,17 +55,16 @@ export const useBudgetStore = create<BudgetState>((set) => ({
           }`,
         };
       }
-      console.log("jawaban res nya bro -> ", res);
       set((state) => ({
         budgets: [res.data, ...state.budgets],
       }));
-      return { success: data };
+      return;
     } catch (error) {
       console.error("Error adding budget:", error);
       if (axios.isAxiosError(error)) {
         return {
           error: `❌ ${
-            error.response?.data?.error || error.message || "Axios error"
+            error.response?.data?.message || error.message || "Axios error"
           }`,
         };
       }
@@ -88,6 +89,7 @@ export const useBudgetStore = create<BudgetState>((set) => ({
   updateBudget: async (id, data) => {
     try {
       const res = await axios.put(`/api/budgets/${id}`, data);
+      console.log(res);
       set((state) => ({
         budgets: state.budgets.map((item) =>
           item.id === id ? res.data : item

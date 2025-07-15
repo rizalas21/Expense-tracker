@@ -25,6 +25,7 @@ export default function DeleteCategory({
 
     console.log("deleteCategory result =>", result);
     if ("error" in result) {
+      setShowModal("");
       return Swal.fire({
         icon: "error",
         title: "Delete Failed",

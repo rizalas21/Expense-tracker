@@ -17,7 +17,7 @@ export default function AddBudgetModal({ showModal, setShowModal }: AddBudget) {
   const { addBudget } = useBudgetStore();
   const [data, setData] = useState({
     amount: 0,
-    month: 1,
+    month: new Date().getMonth() + 1,
     year: new Date().getFullYear(),
     categoryId: "",
   });
@@ -42,7 +42,7 @@ export default function AddBudgetModal({ showModal, setShowModal }: AddBudget) {
       console.log("ini response nya bro -> ", res);
       setShowModal("");
 
-      if ("error" in res) {
+      if (res?.error) {
         setShowModal("");
         return Swal.fire({
           title: "Error!",

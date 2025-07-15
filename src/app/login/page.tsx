@@ -1,5 +1,6 @@
 "use client";
 
+import axios from "axios";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -15,24 +16,46 @@ export default function Login() {
   }
 
   async function handleSubmit(e: any) {
-    e.preventDefault();
-    const res = await signIn("auth-session", {
-      ...input,
-      redirect: false,
-    });
-
-    console.log("res -> ", res);
-
-    if (!res?.ok || res.error) {
-      return Swal.fire({
-        icon: "error",
-        title: "Oops...",
-        text: "Something went wrong!",
+    try {
+      e.preventDefault();
+      const res = await signIn("auth-session", {
+        ...input,
+        redirect: false,
       });
-    }
 
-    setInput({ email: "", password: "" });
-    router.push("/");
+      console.log("res -> ", res);
+
+      if (!res?.ok || res.error) {
+        return Swal.fire({
+          icon: "error",
+          title: "Login Failed",
+          text: "Invalid email or password.",
+        });
+      }
+
+      setInput({ email: "", password: "" });
+      router.push("/");
+      return Swal.fire({
+        icon: "success",
+        title: "Login Successful",
+        text: "Welcome back!",
+        timer: 1500,
+        showConfirmButton: false,
+      });
+    } catch (error) {
+      console.log("Error register User: ", error);
+      if (axios.isAxiosError(error)) {
+        console.log("error axios nya bro => ", error.response?.data);
+        return Swal.fire({
+          icon: "error",
+          title: "Network Error",
+          text:
+            error.response?.data ||
+            error.message ||
+            "Something went wrong during registration.",
+        });
+      }
+    }
   }
 
   return (

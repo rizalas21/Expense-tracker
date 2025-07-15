@@ -3,6 +3,7 @@
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import Swal from "sweetalert2";
 
 export default function Register() {
   const router = useRouter();
@@ -14,12 +15,32 @@ export default function Register() {
   }
 
   async function handleSubmit(e: any) {
-    e.preventDefault();
-    const res = await axios.post("/api/register", input);
-    console.log("response ini bro => ", res);
-    if (res.status >= 400) return null;
-    setInput({ name: "", email: "", password: "" });
-    router.push("/login");
+    try {
+      e.preventDefault();
+      const res = await axios.post("/api/register", input);
+      console.log("response ini bro => ", res);
+      if (res.status >= 400) return null;
+      setInput({ name: "", email: "", password: "" });
+      router.push("/login");
+      Swal.fire({
+        icon: "success",
+        title: "Registration Successful",
+        text: "You can now log in with your new account.",
+      });
+    } catch (error) {
+      console.log("Error register User: ", error);
+      if (axios.isAxiosError(error)) {
+        console.log("error axios nya bro => ", error.response?.data);
+        return Swal.fire({
+          icon: "error",
+          title: "Registration Failed",
+          text:
+            error.response?.data ||
+            error.message ||
+            "Something went wrong during registration.",
+        });
+      }
+    }
   }
   console.log(input);
   return (

@@ -43,7 +43,7 @@ export const useCategoryStore = create<CategoryState>((set) => ({
   deleteCategory: async (id) => {
     try {
       const checkBudgetRes = await axios.get("/api/budgets", {
-        params: { keyword: id },
+        params: { categoryId: id },
       });
 
       const relatedBudgets = checkBudgetRes.data?.data;
@@ -91,7 +91,7 @@ export const useCategoryStore = create<CategoryState>((set) => ({
   updateCategory: async (id, newName) => {
     try {
       await axios.put(`/api/categories/${id}`, {
-        data: { id, name: newName },
+        data: { name: newName },
       });
       set((state) => ({
         categories: state.categories.map((item) =>

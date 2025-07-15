@@ -31,6 +31,9 @@ model Transactions {
   categoryId String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@index([userId])
+  @@index([categoryId])
 }
 
 model Categories {
@@ -42,11 +45,13 @@ model Categories {
   budget     Budgets[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@index([userId])
 }
 
 model Budgets {
   id          String      @id @default(cuid())
-  amount      Float
+  amount      Int
   month       Int
   year        Int
   categoryId  String
@@ -57,6 +62,8 @@ model Budgets {
   updatedAt   DateTime    @updatedAt
 
   @@unique([userId, categoryId, month, year])
+  @@index([userId])
+  @@index([categoryId])
 }
 
 

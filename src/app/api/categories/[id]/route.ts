@@ -59,11 +59,15 @@ export async function DELETE(req: NextRequest) {
   }
 }
 
-export async function PUT(req: NextRequest) {
+export async function PUT(
+  req: NextRequest,
+  { params }: { params: { id: string } }
+) {
   try {
+    const { id } = await params;
     const { data } = await req.json();
     const res = await prisma.categories.update({
-      where: { id: data.id },
+      where: { id },
       data,
     });
     return NextResponse.json(res);

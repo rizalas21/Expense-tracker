@@ -38,3 +38,40 @@ export async function GET(req: NextRequest) {
     );
   }
 }
+
+export async function PUT(
+  req: NextRequest,
+  { params }: { params: { id: string } }
+) {
+  try {
+    const { id } = await params;
+    const data = await req.json();
+
+    if (!id) {
+      return NextResponse.json(
+        { error: "Budget ID is required in the URL." },
+        { status: 400 }
+      );
+    }
+
+    const res = await prisma.budgets.update({
+      where: { id },
+      data,
+      include: { category: true },
+    });
+    return NextResponse.json(res);
+  } catch (error) {
+    console.log("errornya bro -> ", error);
+    console.error("GET /api/budgets/[id] error:", error);
+
+    return NextResponse.json(
+      {
+        error:
+          error instanceof Error
+            ? error.message
+            : "An unexpected error occurred while fetching the category.",
+      },
+      { status: 500 }
+    );
+  }
+}

@@ -18,18 +18,47 @@ export default function UpdateBudget({
   selectedBudget,
   setSelectedBudget,
 }: Props) {
+  const [data, setData] = useState({
+    amount: selectedBudget.amount,
+    month: selectedBudget.month,
+    year: selectedBudget.year,
+    categoryId: selectedBudget.categoryId,
+  });
   const { updateBudget, deleteBudget } = useBudgetStore();
   if (showModal !== "put") return null;
-  console.log("ini data selected nya bro -> ", selectedBudget);
+  console.log(
+    "ini data selected nya bro -> ",
+    selectedBudget,
+    typeof data.amount
+  );
+
+  const handleChange = async (e: any) => {
+    let { name, value } = e.target;
+    if (name === "amount" || name === "month" || name === "year")
+      value = Number(value);
+    console.log("nama broo ", name, value);
+
+    setData({ ...data, [name]: value });
+  };
 
   const handleUpdate = async (e: React.FormEvent) => {
-    e.preventDefault();
-    // await updateBudget(selectedBudget.id, {
-    //   amount,
-    //   month,
-    //   year,
-    // });
-    setShowModal("");
+    try {
+      e.preventDefault();
+      const res = await updateBudget(selectedBudget.id, {
+        ...data,
+      });
+      console.log(res);
+      setShowModal("");
+    } catch (error) {
+      console.error(error);
+      setShowModal("");
+      return Swal.fire({
+        title: "Error!",
+        text: "Failed to add budget.",
+        icon: "error",
+        confirmButtonText: "Try Again",
+      });
+    }
   };
 
   const handleDelete = async () => {
@@ -47,19 +76,17 @@ export default function UpdateBudget({
       //   await deleteBudget(selectedBudget.id);
       Swal.fire("Deleted!", "The budget has been deleted.", "success");
       setShowModal("");
-      setSelectedBudget({
-        id: "",
+      setData({
         amount: 0,
         month: 0,
         year: 0,
         categoryId: "",
-        category: {
-          id: "",
-          name: "",
-        },
       });
     }
   };
+
+  console.log("datanya bro -> ", data);
+  console.log("selected Budgetnya bro => ", selectedBudget);
 
   return (
     <section className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
@@ -80,7 +107,8 @@ export default function UpdateBudget({
               type="number"
               className="w-full px-4 py-2 border rounded-lg"
               defaultValue={selectedBudget.amount}
-              //   onChange={(e) => setAmount(Number(e.target.value))}
+              name="amount"
+              onChange={(e) => handleChange(e)}
               required
             />
           </div>
@@ -90,7 +118,8 @@ export default function UpdateBudget({
             <select
               className="w-full px-4 py-2 border rounded-lg"
               defaultValue={selectedBudget.month}
-              //   onChange={(e) => setMonth(Number(e.target.value))}
+              name="month"
+              onChange={(e) => handleChange(e)}
             >
               {Array.from({ length: 12 }).map((_, i) => (
                 <option key={i + 1} value={i + 1}>
@@ -106,7 +135,8 @@ export default function UpdateBudget({
               type="number"
               className="w-full px-4 py-2 border rounded-lg"
               defaultValue={selectedBudget.year}
-              //   onChange={(e) => setYear(Number(e.target.value))}
+              name="year"
+              onChange={(e) => handleChange(e)}
               min={2023}
               max={2100}
             />

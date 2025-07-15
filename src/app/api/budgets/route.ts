@@ -64,26 +64,23 @@ export async function POST(req: NextRequest) {
 
     if (checkBudget) {
       return NextResponse.json(
-        { message: "❌ Budget already exists" },
+        { message: "Budget already exists" },
         { status: 400 }
       );
     }
     console.log("userId -> ", userId, "data nya bos -> ", data);
     const budget = await prisma.budgets.create({
       data: { ...data, userId },
+      include: {
+        category: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+      },
     });
-
-    const category = await prisma.categories.findFirst({
-      where: { id: budget.categoryId },
-    });
-    console.log({
-      ...budget,
-      categoryName: category?.name || null,
-    });
-    return NextResponse.json({
-      ...budget,
-      categoryName: category?.name || null,
-    });
+    return NextResponse.json(budget);
   } catch (error) {
     console.error("POST Budgets Error:", error);
     return NextResponse.json({ message: "Server error" }, { status: 500 });
