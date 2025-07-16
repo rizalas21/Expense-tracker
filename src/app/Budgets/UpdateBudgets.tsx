@@ -47,8 +47,13 @@ export default function UpdateBudget({
       const res = await updateBudget(selectedBudget.id, {
         ...data,
       });
-      console.log(res);
       setShowModal("");
+      return Swal.fire({
+        title: "Success!",
+        text: "Budget has been updated successfully.",
+        icon: "success",
+        confirmButtonText: "OK",
+      });
     } catch (error) {
       console.error(error);
       setShowModal("");
@@ -62,31 +67,39 @@ export default function UpdateBudget({
   };
 
   const handleDelete = async () => {
-    const result = await Swal.fire({
-      title: "Delete Budget?",
-      text: `This action cannot be undone!`,
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#d33",
-      cancelButtonColor: "#aaa",
-      confirmButtonText: "Yes, delete it!",
-    });
+    try {
+      const result = await Swal.fire({
+        title: "Delete Budget?",
+        text: `This action cannot be undone!`,
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#d33",
+        cancelButtonColor: "#aaa",
+        confirmButtonText: "Yes, delete it!",
+      });
 
-    if (result.isConfirmed) {
-      //   await deleteBudget(selectedBudget.id);
-      Swal.fire("Deleted!", "The budget has been deleted.", "success");
+      if (result.isConfirmed) {
+        await deleteBudget(selectedBudget.id);
+        Swal.fire("Deleted!", "The budget has been deleted.", "success");
+        setShowModal("");
+        setData({
+          amount: 0,
+          month: 0,
+          year: 0,
+          categoryId: "",
+        });
+      }
+    } catch (error) {
+      console.error(error);
       setShowModal("");
-      setData({
-        amount: 0,
-        month: 0,
-        year: 0,
-        categoryId: "",
+      return Swal.fire({
+        title: "Error!",
+        text: "Failed to add budget.",
+        icon: "error",
+        confirmButtonText: "Try Again",
       });
     }
   };
-
-  console.log("datanya bro -> ", data);
-  console.log("selected Budgetnya bro => ", selectedBudget);
 
   return (
     <section className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
