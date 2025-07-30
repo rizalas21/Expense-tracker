@@ -1,6 +1,12 @@
+import { useCategoryStore } from "@/stores/categoryStore";
+import {
+  Transaction,
+  TransactionType,
+  useTransactionStore,
+} from "@/stores/transactionStore";
 import axios from "axios";
 import { useSession } from "next-auth/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 type AddTransactionsModalProps = {
   showModal: boolean;
@@ -11,40 +17,48 @@ export default function AddTransaction({
   showModal,
   setShowModal,
 }: AddTransactionsModalProps) {
-  const { data: session } = useSession();
-  const [data, setData] = useState({
+  const { addTransaction } = useTransactionStore();
+  const { categories, getCategory } = useCategoryStore();
+  const [data, setData] = useState<Omit<Transaction, "id" | "category">>({
     title: "",
-    amount: "",
-    type: "",
-    user: session?.user?.email,
-    date: null,
-    category: "",
+    amount: 0,
+    type: TransactionType.INCOME,
+    date: new Date().toISOString(),
+    categoryId: "",
   });
 
   const handleChange = (e: any) => {
-    const { name, value } = e.target;
+    let { name, value } = e.target;
+    if (name === "amount") return setData({ ...data, amount: Number(value) });
 
     setData({ ...data, [name]: value });
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
+    console.log(
+      "data kalo dirubah bro => ",
+      { ...data },
+      "data murni nya bro => ",
+      data
+    );
     e.preventDefault();
-    const res = await axios.post("/api/transactions", {
-      ...data,
-      amount: Number(data.amount),
-    });
+    await addTransaction(data);
     setShowModal(false);
-    console.log("response nya nihh bro dari add transactions -> ", res);
-    return res;
   };
 
   if (!showModal) return null;
-  console.log(
-    "data nihh bro -> ",
-    data,
-    "session data bro -> ",
-    session?.user?.email
-  );
+  console.log("data nihh bro -> ", data);
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        await getCategory();
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetchCategories();
+  }, [getCategory]);
 
   return (
     <section className="flex items-center justify-center h-screen w-screen fixed left-0 top-0 bg-black/50 z-50">
@@ -78,7 +92,9 @@ export default function AddTransaction({
             <button
               type="button"
               name=""
-              onClick={(e) => setData({ ...data, type: "INCOME" })}
+              onClick={(e) =>
+                setData({ ...data, type: TransactionType.INCOME })
+              }
               className={`flex-1 px-4 py-2 rounded-lg border ${
                 data.type === "INCOME"
                   ? "bg-green-500 text-white"
@@ -89,7 +105,9 @@ export default function AddTransaction({
             </button>
             <button
               type="button"
-              onClick={(e) => setData({ ...data, type: "EXPENSE" })}
+              onClick={(e) =>
+                setData({ ...data, type: TransactionType.EXPENSE })
+              }
               className={`flex-1 px-4 py-2 rounded-lg border ${
                 data.type === "EXPENSE"
                   ? "bg-red-500 text-white"
@@ -112,22 +130,20 @@ export default function AddTransaction({
           />
 
           <select
-            name="category"
+            name="categoryId"
             required
             className="border border-gray-300 px-3 py-2 rounded-lg"
             onChange={(e) => handleChange(e)}
           >
             <option value="">Select Category</option>
-            <option value="Groceries">Groceries</option>
-            <option value="cat2">Transport</option>
-            <option value="cat3">Salary</option>
+            {categories.map((item) => (
+              <option key={item.id} value={item.id}>
+                {item.name}
+              </option>
+            ))}
           </select>
 
-          <input
-            type="hidden"
-            name="userId"
-            value="current-user-id" // ganti dari session
-          />
+          <input type="hidden" name="userId" value="current-user-id" />
 
           <div className="flex justify-end gap-3 mt-4">
             <button

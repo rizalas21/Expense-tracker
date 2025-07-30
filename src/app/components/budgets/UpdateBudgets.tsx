@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useBudgetStore } from "@/stores/budgetStore";
-import { Budget } from "./page";
+import { Budget } from "../../budgets/page";
 import Swal from "sweetalert2";
 
 interface Props {

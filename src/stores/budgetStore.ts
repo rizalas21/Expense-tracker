@@ -7,7 +7,6 @@ export interface Budget {
   month: number;
   year: number;
   categoryId: string;
-  userId: string;
   category: {
     id: string;
     name: string;

@@ -1,9 +1,12 @@
 import { prisma } from "@/lib/auth/prisma";
 import { NextRequest, NextResponse } from "next/server";
 
-export async function GET(req: NextRequest) {
+export async function GET(
+  req: NextRequest,
+  { params }: { params: { id: string } }
+) {
   try {
-    const id = req.nextUrl.pathname.split("/")[3];
+    const { id } = await params;
 
     if (!id) {
       return NextResponse.json(

@@ -2,12 +2,12 @@
 
 import axios from "axios";
 import { useEffect, useState } from "react";
-import AddCategories from "./AddCategory";
+import AddCategories from "../components/categories/AddCategory";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPenAlt, faTrashAlt } from "@fortawesome/free-solid-svg-icons";
-import DeleteCategory from "./DeleteCategory";
+import DeleteCategory from "../components/categories/DeleteCategory";
 import { useCategoryStore } from "@/stores/categoryStore";
-import UpdateCategory from "./UpdateCategory";
+import UpdateCategory from "../components/categories/UpdateCategory";
 
 export interface Category {
   id: string;

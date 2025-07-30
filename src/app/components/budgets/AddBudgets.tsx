@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Budget } from "./page";
+import { Budget } from "../../budgets/page";
 import { useCategoryStore } from "@/stores/categoryStore";
 import { useBudgetStore } from "@/stores/budgetStore";
 import Swal from "sweetalert2";
@@ -12,7 +12,6 @@ type AddBudget = {
 };
 
 export default function AddBudgetModal({ showModal, setShowModal }: AddBudget) {
-  //   const { addBudget } = useBudgetStore();
   const { categories, getCategory } = useCategoryStore();
   const { addBudget } = useBudgetStore();
   const [data, setData] = useState({

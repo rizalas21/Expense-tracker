@@ -2,11 +2,47 @@
 
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useState } from "react";
-import AddTransaction from "../components/AddTransaction";
+import { useEffect, useState } from "react";
+import AddTransaction from "../components/transactions/AddTransaction";
+import { useTransactionStore } from "@/stores/transactionStore";
+import { useCategoryStore } from "@/stores/categoryStore";
+
+export interface Transaction {
+  id: string;
+  title: string;
+  amount: number;
+  type: "";
+  date: "";
+  categoryId: "";
+}
 
 export default function Transactions() {
   const [showModal, setShowModal] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const { transactions, getTransactions } = useTransactionStore();
+  const { categories, getCategory } = useCategoryStore();
+  const [selectedBudget, setSelectedBudget] = useState<Transaction>({
+    id: "",
+    title: "",
+    amount: 0,
+    type: "",
+    date: "",
+    categoryId: "",
+  });
+
+  useEffect(() => {
+    try {
+      getTransactions();
+      getCategory();
+    } catch (error) {
+      console.log("error when try getTransactions -> ", error);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [getTransactions, getCategory]);
+
+  console.log("ini transactions nya bro => ", transactions);
+
   return (
     <main className="w-full flex flex-col gap-5 max-h-screen px-4">
       <div className="flex justify-between px-3">
@@ -46,8 +82,11 @@ export default function Transactions() {
 
         <select className="min-w-[200px] px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200">
           <option value="">Choose Category</option>
-          <option value="">Category 1</option>
-          <option value="">Category 2</option>
+          {categories.map((item) => (
+            <option key={item.id} value={item.id}>
+              {item.name}
+            </option>
+          ))}
         </select>
 
         <div className="flex gap-4">
@@ -65,34 +104,50 @@ export default function Transactions() {
           id="Transactions"
           className="bg-white px-5 py-3 rounded-lg space-y-2 shadow-xl w-full"
         >
-          <table className="w-full table-auto">
-            <thead>
-              <tr className="border-b border-gray-500/30">
-                <th className="text-left px-4 py-2">Date</th>
-                <th className="text-left px-4 py-2">Description</th>
-                <th className="text-left px-4 py-2">Amount</th>
-                <th className="text-left px-4 py-2">Category</th>
-                <th className="text-left px-4 py-2">Type</th>
-                <th className="text-right px-4 py-2">Detail Transaction</th>
-              </tr>
-            </thead>
-            <tbody className=" overflow-y-auto">
-              {[...Array(8)].map((_, i) => (
-                <tr key={i} className="border-b border-gray-500/30">
-                  <td className="text-left px-4 py-2">4/2</td>
-                  <td className="text-left px-4 py-2">Refund</td>
-                  <td className="text-left px-4 py-2">$100</td>
-                  <td className="text-left px-4 py-2">Refund</td>
-                  <td className="text-left px-4 py-2">Expense</td>
-                  <td className="text-center px-4 py-2">
-                    <button className="text-blue-600 hover:underline">
-                      Detail
-                    </button>
-                  </td>
+          {isLoading ? (
+            <p className="text-center py-6 text-gray-500">Loading...</p>
+          ) : (
+            <table className="w-full table-auto">
+              <thead>
+                <tr className="border-b border-gray-500/30">
+                  <th className="text-center px-4 py-2">Date</th>
+                  <th className="text-center px-4 py-2">Description</th>
+                  <th className="text-center px-4 py-2">Amount</th>
+                  <th className="text-center px-4 py-2">Category</th>
+                  <th className="text-center px-4 py-2">Type</th>
+                  <th className="text-center px-2 py-2">Detail Transaction</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody className=" overflow-y-auto">
+                {transactions.length > 0 ? (
+                  transactions.map((item) => (
+                    <tr key={item.id} className="border-b border-gray-500/30">
+                      <td className="text-center px-4 py-2">
+                        {new Date(item.date).toLocaleString()}
+                      </td>
+                      <td className="text-center px-4 py-2">{item.title}</td>
+                      <td className="text-center px-4 py-2">{item.amount}</td>
+                      <td className="text-center px-4 py-2">
+                        {item.category.name}
+                      </td>
+                      <td className="text-center px-4 py-2">{item.type}</td>
+                      <td className="text-center px-4 py-2">
+                        <button className="text-blue-600 hover:underline">
+                          Detail
+                        </button>
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan={6} className="text-center py-6 text-gray-500">
+                      No Transactions found.
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          )}
           <div className="w-full flex justify-between text-sm font-medium py-2 px-2">
             <p className="text-green-700">Total Income: 450</p>
             <p className="text-red-700">Total Expense: 450</p>

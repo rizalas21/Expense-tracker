@@ -4,9 +4,9 @@ import { useBudgetStore } from "@/stores/budgetStore";
 import { faPenToSquare } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useState } from "react";
-import AddBudgetModal from "./AddBudgets";
+import AddBudgetModal from "../components/budgets/AddBudgets";
 import monthOfName from "@/lib/monthOfName";
-import UpdateBudget from "./UpdateBudgets";
+import UpdateBudget from "../components/budgets/UpdateBudgets";
 
 export interface Budget {
   id: string;
@@ -76,31 +76,31 @@ export default function Budgets() {
               </thead>
               <tbody>
                 {budgets.length > 0 ? (
-                  budgets.map((items) => (
-                    <tr key={items.id} className="border-b border-gray-500/30">
+                  budgets.map((item) => (
+                    <tr key={item.id} className="border-b border-gray-500/30">
                       <td className="text-left px-4 py-3">
-                        {items.category.name}
+                        {item.category.name}
                       </td>
                       <td className="text-left px-4 py-3">
-                        {monthOfName(items.month)}
+                        {monthOfName(item.month)}
                       </td>
-                      <td className="text-left px-4 py-3">{items.year}</td>
+                      <td className="text-left px-4 py-3">{item.year}</td>
                       <td className="text-left px-4 py-3 text-green-700 font-bold">
-                        Rp. {items.amount}
+                        Rp. {item.amount}
                       </td>
                       <td className="text-center px-4 py-3">
                         <button
                           className="text-blue-600 cursor-pointer hover:text-blue-500/50"
                           onClick={() => {
                             setSelectedBudget({
-                              id: items.id,
-                              amount: items.amount,
-                              month: items.month,
-                              year: items.year,
-                              categoryId: items.categoryId,
+                              id: item.id,
+                              amount: item.amount,
+                              month: item.month,
+                              year: item.year,
+                              categoryId: item.categoryId,
                               category: {
-                                id: items.category.id,
-                                name: items.category.name,
+                                id: item.category.id,
+                                name: item.category.name,
                               },
                             });
                             setShowModal("put");

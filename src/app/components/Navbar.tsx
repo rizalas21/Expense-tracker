@@ -8,10 +8,8 @@ import {
   faTag,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useSession } from "next-auth/react";
-import { usePathname, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
-import LoadingComponent from "./LoadingComponent";
+import { usePathname } from "next/navigation";
+import { useState } from "react";
 import LogoutModal from "./LogoutModal";
 
 export default function Navbar() {
@@ -21,7 +19,7 @@ export default function Navbar() {
   return (
     <section
       id="navbar"
-      className="bg-gray-900 h-screen w-[25%] text-gray-300 px-10 py-6 space-y-6 z-999"
+      className="bg-gray-900 h-screen w-[25%] text-gray-300 px-10 py-6 space-y-6"
     >
       {showLogoutModal && (
         <LogoutModal

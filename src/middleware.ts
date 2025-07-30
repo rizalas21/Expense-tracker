@@ -1,5 +1,6 @@
 import { getToken } from "next-auth/jwt";
 import { NextRequest, NextResponse } from "next/server";
+import axios from "axios";
 
 export default async function middleware(req: NextRequest) {
   const token = await getToken({ req, secret: process.env.SECRET_AUTH });
@@ -8,7 +9,11 @@ export default async function middleware(req: NextRequest) {
     return NextResponse.next();
 
   if (!token) return NextResponse.redirect(new URL("/login", req.url));
-  console.log("token nihh bro -> ", token.id);
+  // if (token?.id) {
+  //   const id = token.id;
+  //   const user = await axios.get(`/api/users/${id}`);
+  //   if (!user) return NextResponse.redirect(new URL("/login", req.url));
+  // }
   const requestHeaders = new Headers(req.headers);
   requestHeaders.set("user-id", token.id as string);
 
@@ -16,5 +21,5 @@ export default async function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/api/:path*", "/categories", "/budgets"],
+  matcher: ["/api/:path*", "/categories", "/budgets", "/transactions"],
 };
