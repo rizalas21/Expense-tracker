@@ -9,8 +9,8 @@ import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 
 type AddTransactionsModalProps = {
-  showModal: boolean;
-  setShowModal: (value: boolean) => void;
+  showModal: string;
+  setShowModal: (value: string) => void;
 };
 
 export default function AddTransaction({
@@ -43,10 +43,10 @@ export default function AddTransaction({
     );
     e.preventDefault();
     await addTransaction(data);
-    setShowModal(false);
+    setShowModal("");
   };
 
-  if (!showModal) return null;
+  if (showModal !== "add") return null;
   console.log("data nihh bro -> ", data);
 
   useEffect(() => {
@@ -148,7 +148,7 @@ export default function AddTransaction({
           <div className="flex justify-end gap-3 mt-4">
             <button
               type="button"
-              onClick={() => setShowModal(false)}
+              onClick={() => setShowModal("")}
               className="px-4 py-2 bg-gray-300 text-gray-800 rounded hover:bg-gray-400"
             >
               Cancel

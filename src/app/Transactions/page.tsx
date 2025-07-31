@@ -130,9 +130,17 @@ export default function Transactions() {
                       <td className="text-center px-4 py-2">
                         {item.category.name}
                       </td>
-                      <td className="text-center px-4 py-2">{item.type}</td>
+                      <td
+                        className={`text-center px-4 py-2 ${
+                          item.type === "EXPENSE"
+                            ? "text-red-700"
+                            : "text-green-700"
+                        }`}
+                      >
+                        {item.type}
+                      </td>
                       <td className="text-center px-4 py-2">
-                        <button className="text-blue-600 hover:underline">
+                        <button className="text-blue-600 cursor-pointer underline">
                           Detail
                         </button>
                       </td>
